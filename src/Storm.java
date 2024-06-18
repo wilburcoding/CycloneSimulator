@@ -230,9 +230,9 @@ class Storm implements Serializable {
             if (y < 451) {
                 if (Math.abs(xoffset) < (250 - winds) / 30.0 + ((500 - y) - 50) / 45) {
                     if (randomGenerator(0, 1) == 1) {
-                        xoffset = xoffset - myRandom(0, 1);
+                        xoffset = xoffset - myRandom(0, 0.7);
                     } else {
-                        xoffset = xoffset + myRandom(0, 1);
+                        xoffset = xoffset + myRandom(0, 0.7);
                     }
                 } else {
                     if (xoffset < 0) {
@@ -244,9 +244,9 @@ class Storm implements Serializable {
             } else {
                 if (Math.abs(xoffset) < (250 - winds) / 30.0) {
                     if (randomGenerator(0, 1) == 1) {
-                        xoffset = xoffset - myRandom(0, 1);
+                        xoffset = xoffset - myRandom(0, 0.7);
                     } else {
-                        xoffset = xoffset + myRandom(0, 1);
+                        xoffset = xoffset + myRandom(0, 0.7);
                     }
                 } else {
                     if (xoffset < 0) {
@@ -262,12 +262,12 @@ class Storm implements Serializable {
                         yoffset = yoffset + myRandom(2, 4);
                     } else {
                         if (x < 100) {
-                            yoffset = yoffset + myRandom(0, 2);
+                            yoffset = yoffset + myRandom(0, 1.3);
                         } else {
                             if (randomGenerator(0, 1) == 1) {
-                                yoffset = yoffset - myRandom(0, 1);
+                                yoffset = yoffset - myRandom(0, 0.7);
                             } else {
-                                yoffset = yoffset + myRandom(0, 1);
+                                yoffset = yoffset + myRandom(0, 0.7);
                             }
                         }
                     }
@@ -287,9 +287,9 @@ class Storm implements Serializable {
                             yoffset = yoffset + myRandom(0, 2);
                         } else {
                             if (randomGenerator(0, 1) == 1) {
-                                yoffset = yoffset - myRandom(0, 1);
+                                yoffset = yoffset - myRandom(0, 0.7);
                             } else {
-                                yoffset = yoffset + myRandom(0, 1);
+                                yoffset = yoffset + myRandom(0, 0.7);
                             }
                         }
                     }

@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 public class CycloneSimulator implements Serializable {
     final JMenuBar menuBar = new JMenuBar();
+    private final String version = "v2.1.9";
     private final JComboBox<String> activityThings = new JComboBox<>();
     private final JComboBox<String> trackType = new JComboBox<>();
     private final JComboBox<String> resolution = new JComboBox<>();
@@ -43,7 +44,7 @@ public class CycloneSimulator implements Serializable {
     boolean t = false;
     boolean trackforecast = false;
     JPanel headerpanel = new JPanel();
-    JFrame frame = new JFrame("Settings - CycloneSimulator v2.1.7");
+    JFrame frame = new JFrame("Settings - CycloneSimulator"+ version);
     int frameDelay = 50;
     int year = 2021;
     boolean tcchance = false;
