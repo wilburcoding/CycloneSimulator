@@ -196,9 +196,9 @@ class Storm implements Serializable {
 
                 if (Math.abs(xoffset) < (250 - winds) / 30.0 + ((500 - y) - 50) / 45) {
                     if (randomGenerator(0, 1) == 1) {
-                        xoffset = xoffset - myRandom(0, 0.7);
+                        xoffset = xoffset - myRandom(0, 1.3);
                     } else {
-                        xoffset = xoffset + myRandom(0, 0.7);
+                        xoffset = xoffset + myRandom(0, 1.3);
                     }
                 } else {
                     if (xoffset < 0) {
@@ -210,9 +210,9 @@ class Storm implements Serializable {
             } else {
                 if (Math.abs(xoffset) < (250 - winds) / 30.0) {
                     if (randomGenerator(0, 1) == 1) {
-                        xoffset = xoffset - myRandom(0, 0.7);
+                        xoffset = xoffset - myRandom(0, 0.9);
                     } else {
-                        xoffset = xoffset + myRandom(0, 0.7);
+                        xoffset = xoffset + myRandom(0, 0.9);
                     }
                 } else {
                     if (xoffset < 0) {
@@ -231,9 +231,9 @@ class Storm implements Serializable {
                             yoffset = yoffset + myRandom(0, 1.3);
                         } else {
                             if (randomGenerator(0, 1) == 1) {
-                                yoffset = yoffset - myRandom(0, 0.7);
+                                yoffset = yoffset - myRandom(0, 1.2);
                             } else {
-                                yoffset = yoffset + myRandom(0, 0.7);
+                                yoffset = yoffset + myRandom(0, 1.2);
                             }
                         }
                     }
@@ -253,9 +253,9 @@ class Storm implements Serializable {
                             yoffset = yoffset + myRandom(0, 2);
                         } else {
                             if (randomGenerator(0, 1) == 1) {
-                                yoffset = yoffset - myRandom(0, 0.7);
+                                yoffset = yoffset - myRandom(0, 1);
                             } else {
-                                yoffset = yoffset + myRandom(0, 0.7);
+                                yoffset = yoffset + myRandom(0, 1);
                             }
                         }
                     }
@@ -273,8 +273,8 @@ class Storm implements Serializable {
             if (y > 490) {
                 yoffset = yoffset + 3;
             }
-            x = x - xoffset;
-            y = y - yoffset;
+            x = x - (xoffset/1.3);
+            y = y - (yoffset/1.3);
 
             double startingWinds = winds;
             if (!rapidIntensification) {
@@ -337,24 +337,21 @@ class Storm implements Serializable {
                 winds = winds - myRandom(shear / 7.0, shear / 3.0);
             } else {
                 if (winds < 90) {
-                    winds = winds - myRandom(shear / 6.6, shear / 2.8);
+                    winds = winds - myRandom(shear / 6.6, shear / 2.6);
                 } else {
                     if (winds < 110) {
-                        winds = winds - myRandom(shear / 6.2, shear / 2.6);
+                        winds = winds - myRandom(shear / 6.0, shear / 2.4);
                     } else {
                         if (winds < 140) {
-                            winds = winds - myRandom(shear / 5.8, shear / 2.5);
+                            winds = winds - myRandom(shear / 5.4, shear / 2.2);
                         } else {
-                            winds = winds - myRandom(shear / 5.8, shear / 2.4);
+                            winds = winds - myRandom(shear / 5.4, shear / 2.1);
                         }
                     }
                 }
             }
 
             shear = shear / 2;
-            if (shear < 0) {
-                System.out.println(shear);
-            }
             double cX = x;
             double cY = y;
             if (y > (height * (0.9 + offSet))) {
@@ -415,7 +412,7 @@ class Storm implements Serializable {
                 }
             }
             double xRChange = x-cX;
-            while (Math.abs(xRChange) > 4) {
+            while (Math.abs(xRChange) > 7) {
                 if (xRChange < 0) {
                     x+=1;
                 } else {
@@ -425,7 +422,7 @@ class Storm implements Serializable {
 
             }
             double yRChange = y-cY;
-            while (Math.abs(yRChange) > 4) {
+            while (Math.abs(yRChange) > 7) {
                 if (yRChange < 0) {
                     y+=1;
                 } else {
@@ -837,8 +834,8 @@ class Storm implements Serializable {
                         yoffset = yoffset - 1;
                     }
                 }
-                x = x - xoffset;
-                y = y - yoffset;
+                x = x - (xoffset/1.4);
+                y = y - yoffset/1.4;
                 double cX = x;
                 double cY = y;
                 if (onland) {
@@ -1177,8 +1174,8 @@ class Storm implements Serializable {
                         }
                     }
                 }
-                x = x - xoffset;
-                y = y - yoffset;
+                x = x - xoffset/1.3;
+                y = y - yoffset/1.3;
                 double cX = x;
                 double cY = y;
                 if (onland) {

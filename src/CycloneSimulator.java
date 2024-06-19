@@ -59,7 +59,7 @@ public class CycloneSimulator implements Serializable {
     boolean sWind = false;
     boolean gusts = false;
     boolean surge = false;
-
+    boolean threat = false;
     boolean seasonSummary = false;
     boolean huchance = false;
     int mouseX;
@@ -436,6 +436,9 @@ public class CycloneSimulator implements Serializable {
                 if (sWind) {
                     frame.setTitle(Year.of(year).atDay(day) + ", " + z + ":00 (SUSTAINED WINDS)");
                 }
+                if (threat) {
+                    frame.setTitle(Year.of(year).atDay(day) + ", " + z + ":00 (LAND THREAT)");
+                }
                 if (gusts) {
                     frame.setTitle(Year.of(year).atDay(day) + ", " + z + ":00 (WIND GUSTS)");
                 }
@@ -480,7 +483,7 @@ public class CycloneSimulator implements Serializable {
                     if (original != null) {
                         showing = true;
                     }
-                    if (pressed && (!sst && !tcchance && !huchance && !sWind && !gusts && !surge)) {
+                    if (pressed && (!sst && !tcchance && !huchance && !sWind && !gusts && !surge && !threat)) {
 
                         for (Storm storm : storms) {
                             double distance = Math.sqrt(Math.pow(mouseY - 50 - storm.getY(), 2) + Math.pow(mouseX - 30 - storm.getX(), 2));
@@ -1242,7 +1245,7 @@ public class CycloneSimulator implements Serializable {
                     }
                 }
 
-                if (!sWind && !gusts && !sst && !tcchance && !huchance && !surge) {
+                if (!sWind && !gusts && !sst && !tcchance && !huchance && !surge && !threat) {
                     tswatches = 0;
                     tswarnings = 0;
                     huwarnings = 0;
@@ -1555,7 +1558,7 @@ public class CycloneSimulator implements Serializable {
                                     //int[] presetWinds = {25,35,55,85,100,120,137,160};
                                     double distance = Math.sqrt(((y2 + (SimResolution / 2.0) - coordinate.getY()) * ((y2 + (SimResolution / 2.0)) - coordinate.getY()) + ((x2 + (SimResolution / 2.0)) - coordinate.getX()) * ((x2 + (SimResolution / 2.0)) - coordinate.getX())));
                                     if (distance < 3) {
-                                        distance = 2;
+                                        distance = 3;
                                     }
                                     double winds = Math.sqrt(((15 * storm.getWinds()) * (storm.getStormSize()/2.3)) / ((distance) / 3) );
                                     double wChance;
@@ -1563,7 +1566,7 @@ public class CycloneSimulator implements Serializable {
                                     if (winds > 60) {
                                         wChance = 100;
                                     } else {
-                                        wChance = ((winds-20)/20)*100;
+                                        wChance = ((winds-30)/10)*100;
                                     }
                                     double oldWChance = wChance;
                                     wChance*=(double) (trackForecast.size()- (trackForecast.indexOf(coordinate)))/(trackForecast.size());
@@ -1631,7 +1634,7 @@ public class CycloneSimulator implements Serializable {
                                     //int[] presetWinds = {25,35,55,85,100,120,137,160};
                                     double distance = Math.sqrt(((y2 + (SimResolution / 2.0) - coordinate.getY()) * ((y2 + (SimResolution / 2.0)) - coordinate.getY()) + ((x2 + (SimResolution / 2.0)) - coordinate.getX()) * ((x2 + (SimResolution / 2.0)) - coordinate.getX())));
                                     if (distance < 3) {
-                                        distance = 2;
+                                        distance = 3;
                                     }
                                     double winds = Math.sqrt(((15 * storm.getWinds()) * (storm.getStormSize()/2.3)) / ((distance) / 3.0));
                                     double wChance;
@@ -1820,6 +1823,138 @@ public class CycloneSimulator implements Serializable {
 
 
                 }
+                if (threat) {
+                    int x2;
+                    int y2 = 0;
+                    ArrayList<ArrayList<Coordinate>> trackForecasts = new ArrayList<>();
+
+                    for (Storm storm : storms) {
+                        trackForecasts.add(storm.getTrackForecast(landList));
+
+
+                    }
+                    for (int i = 0; i < Math.ceil( 500.0 / (double) SimResolution); i++) {
+                        x2 = 0;
+                        for (int j = 0; j < Math.ceil(1000.0 / (double) SimResolution); j++) {
+                            Graphics2D g2d = (Graphics2D) g.create();
+                            int x = x2 + (SimResolution / 2);
+                            int y = y2 + (SimResolution / 2);
+                            double tsWindChance = 0;
+                            double huWindChance = 0;
+                            double confidenceTS = 0;
+                            double confidenceHU = 0;
+                            boolean inLand = false;
+                            for (Land land: landList) {
+                                if (land.inLandBorder(x,y, SimResolution)) {
+                                    inLand=true;
+                                } else {
+                                    for (int l = -1; l < 2; l++) {
+                                        for (int m = -1; m < 2; m++) {
+                                            int tx = x2 + (SimResolution / 2) + (SimResolution * l);
+                                            int ty = y2 + (SimResolution / 2) + (SimResolution * m);
+                                            if (land.inLandBorder(tx,ty, SimResolution)) {
+                                                inLand = true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            if (!inLand) {
+                                g2d.setColor(new Color(168, 165, 165));
+                                g2d.fillRect(x2, y2, SimResolution, SimResolution);
+                                x2 = x2 + SimResolution;
+                                continue;
+                            }
+                            for (ArrayList<Coordinate> trackForecast : trackForecasts) {
+
+                                Storm storm = storms.get(trackForecasts.indexOf(trackForecast));
+
+                                for (Coordinate coordinate : trackForecast) {
+                                    //int[] presetWinds = {25,35,55,85,100,120,137,160};
+                                    double distance = Math.sqrt(((y2 + (SimResolution / 2.0) - coordinate.getY()) * ((y2 + (SimResolution / 2.0)) - coordinate.getY()) + ((x2 + (SimResolution / 2.0)) - coordinate.getX()) * ((x2 + (SimResolution / 2.0)) - coordinate.getX())));
+                                    if (distance < 3) {
+                                        distance = 3;
+                                    }
+                                    //Math.sqrt(((15 * storm.getWinds()) * (storm.getStormSize()/2.3)) / (distance / 3))
+                                    double winds = Math.sqrt(((15 * coordinate.getWind()) * (storm.getStormSize()/2.3)) / ((distance) / 3) );
+                                    double wChance;
+                                    double hChance;
+                                    if (winds > coordinate.getWind()) {
+                                        winds = coordinate.getWind();
+                                    }
+
+                                    if (winds > 60) {
+                                        wChance = 100;
+                                    } else {
+                                        wChance = ((winds-30)/10)*100;
+                                    }
+                                    double oldWChance = wChance;
+                                    wChance*=(double) (trackForecast.size()- (trackForecast.indexOf(coordinate)))/(trackForecast.size());
+                                    if (wChance > oldWChance) {
+                                        wChance = oldWChance;
+                                    }
+                                    if (wChance > tsWindChance) {
+                                        tsWindChance=wChance;
+                                        confidenceTS = trackForecast.indexOf(coordinate);
+                                    }
+                                    if (winds > 90) {
+                                        hChance = 100;
+                                    } else {
+                                        hChance = ((winds-70)/20)*100;
+                                    }
+                                    double oldHChance = hChance;
+                                    hChance*=(double) (trackForecast.size()- (trackForecast.indexOf(coordinate)))/(trackForecast.size());
+                                    if (hChance > oldHChance) {
+                                        hChance = oldHChance;
+                                    }
+
+                                    if (hChance > huWindChance) {
+                                        huWindChance=hChance;
+                                        confidenceHU = trackForecast.indexOf(coordinate);
+                                    }
+
+
+                                }
+                            }
+                            if (!inLand) {
+                                g2d.setColor(new Color(168, 165, 165));
+                            } else {
+                                if (tsWindChance > 60) {
+                                    if (huWindChance > 60) {
+                                        g2d.setColor(new Color(255, 0, 0));
+                                    } else {
+                                        if (confidenceHU > 4 && huWindChance > 30) {
+                                            g2d.setColor(new Color(242, 177, 172));
+                                        } else if (tsWindChance > 80){
+                                            g2d.setColor(new Color(0, 71, 255));
+                                        } else {
+                                            if (confidenceTS > 3) {
+                                                g2d.setColor(new Color(255, 225, 0));
+
+                                            } else {
+                                                g2d.setColor(new Color(168, 165, 165));
+
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    if (confidenceTS > 3 && tsWindChance > 30) {
+                                        g2d.setColor(new Color(255, 225, 0));
+
+                                    } else {
+                                        g2d.setColor(new Color(168, 165, 165));
+
+                                    }
+                                }
+                            }
+                            g2d.fillRect(x2, y2, SimResolution, SimResolution);
+                            x2 = x2 + SimResolution;
+
+                        }
+                        y2 = y2 + SimResolution;
+                    }
+
+                }
                 if (sWind) {
                     int x2;
                     int y2 = 0;
@@ -1864,7 +1999,7 @@ public class CycloneSimulator implements Serializable {
                     }
 
                 }
-                if (sWind || gusts || sst || tcchance || surge || huchance) {
+                if (sWind || gusts || sst || tcchance || surge || huchance || threat) {
                     for (Land lands : landList) {
                         Graphics2D g2d = (Graphics2D) g.create();
                         g2d.setStroke(new BasicStroke(1));
@@ -2731,6 +2866,7 @@ public class CycloneSimulator implements Serializable {
                 newMenuItem.addActionListener(e1 -> {
                     gusts = false;
                     sWind = false;
+                    threat = false;
                     sst = false;
                     tcchance = false;
                     huchance= false;
@@ -2805,6 +2941,7 @@ public class CycloneSimulator implements Serializable {
                     sWind = !sWind;
                     gusts = false;
                     sst = false;
+                    threat = false;
                     surge = false;
                     tcchance = false;
                     huchance = false;
@@ -2820,6 +2957,7 @@ public class CycloneSimulator implements Serializable {
                     surge = false;
                     tcchance = false;
                     huchance = false;
+                    threat = false;
                 });
                 layerMenu.add(newMenuItem);
 
@@ -2830,6 +2968,7 @@ public class CycloneSimulator implements Serializable {
                     sWind = false;
                     sst = !sst;
                     tcchance = false;
+                    threat = false;
                     surge = false;
                     huchance = false;
                 });
@@ -2841,6 +2980,7 @@ public class CycloneSimulator implements Serializable {
                     sWind = false;
                     sst = false;
                     tcchance = !tcchance;
+                    threat = false;
                     surge = false;
                     huchance = false;
                 });
@@ -2851,6 +2991,7 @@ public class CycloneSimulator implements Serializable {
                 newMenuItem.addActionListener(e1 -> {
                     gusts = false;
                     sWind = false;
+                    threat = false;
                     sst = false;
                     huchance = false;
                     tcchance = false;
@@ -2873,6 +3014,20 @@ public class CycloneSimulator implements Serializable {
                     sst = false;
                     tcchance = false;
                     surge = false;
+                    threat = false;
+                });
+
+                layerMenu.add(newMenuItem);
+                newMenuItem = new JMenuItem("Land Threat");
+                newMenuItem.setActionCommand("Land Threat");
+                newMenuItem.addActionListener(e1 -> {
+                    sWind = false;
+                    gusts = false;
+                    sst = false;
+                    surge = false;
+                    tcchance = false;
+                    huchance = false;
+                    threat = !threat;
                 });
                 layerMenu.add(newMenuItem);
                 trackforecastshow = new JMenuItem("Track Forecast");
@@ -2976,6 +3131,7 @@ public class CycloneSimulator implements Serializable {
                                                 sWind = !sWind;
                                                 gusts = false;
                                                 sst = false;
+                                                threat = false;
                                                 surge = false;
                                                 tcchance = false;
                                                 huchance = false;
@@ -2984,6 +3140,8 @@ public class CycloneSimulator implements Serializable {
                                                 gusts = !gusts;
                                                 sWind = false;
                                                 sst = false;
+                                                threat = false;
+
                                                 surge = false;
                                                 huchance = false;
 
@@ -2995,6 +3153,8 @@ public class CycloneSimulator implements Serializable {
                                                     sst = false;
                                                     tcchance = false;
                                                     surge = false;
+                                                    threat = false;
+
                                                     huchance = false;
 
                                                 }
@@ -3005,11 +3165,15 @@ public class CycloneSimulator implements Serializable {
                                                     tcchance = false;
                                                     surge = false;
                                                     huchance = false;
+                                                    threat = false;
+
 
                                                 } else {
                                                     if (ke.getKeyCode() == KeyEvent.VK_5) {
                                                         gusts = false;
                                                         sWind = false;
+                                                        threat = false;
+
                                                         sst = false;
                                                         tcchance = !tcchance;
                                                         surge = false;
@@ -3020,6 +3184,8 @@ public class CycloneSimulator implements Serializable {
                                                             gusts = false;
                                                             sWind = false;
                                                             sst = false;
+                                                            threat = false;
+
                                                             tcchance = false;
                                                             surge = !surge;
                                                             huchance = false;
@@ -3027,10 +3193,21 @@ public class CycloneSimulator implements Serializable {
                                                             if (ke.getKeyCode() == KeyEvent.VK_8) {
                                                                 gusts = false;
                                                                 sWind = false;
+                                                                threat = false;
                                                                 sst = false;
                                                                 tcchance = false;
                                                                 surge = false;
                                                                 huchance = !huchance;
+                                                                t = false;
+                                                            }
+                                                            if (ke.getKeyCode() == KeyEvent.VK_9) {
+                                                                gusts = false;
+                                                                sWind = false;
+                                                                sst = false;
+                                                                tcchance = false;
+                                                                surge = false;
+                                                                huchance = false;
+                                                                threat = !threat;
                                                                 t = false;
                                                             }
                                                             if (ke.getKeyCode() == KeyEvent.VK_7) {
