@@ -1388,10 +1388,29 @@ public class CycloneSimulator implements Serializable {
                                 g2d.setColor(new Color(0, 0, 0));
                                 g2d.drawString(storm.getName(), x, y);
                                 if (storm.getStormType().getStormType() == 0) {
-                                    g2d.setColor(Color.LIGHT_GRAY);
-                                    g2d.fillOval(x, y, 30, 30);
-                                    g2d.setColor(new Color(0, 0, 0));
-                                    g2d.drawString("L", x + 12, y + 19);
+                                    if (!storm.isFormed()) {
+                                        if (storm.getChanceForm() < 30) {
+                                            g2d.setColor(new Color(255, 246, 88));
+
+                                        } else if (storm.getChanceForm() < 70) {
+                                            g2d.setColor(new Color(255, 177, 88));
+
+                                        } else {
+                                            g2d.setColor(new Color(255, 94, 88));
+
+                                        }
+
+                                        g2d.setFont(new Font("Comic Sans MS", Font.BOLD, 25));
+                                        g2d.drawString("X", x , y+20);
+
+
+                                    } else {
+                                        g2d.setColor(Color.LIGHT_GRAY);
+                                        g2d.fillOval(x, y, 30, 30);
+                                        g2d.setColor(new Color(0, 0, 0));
+                                        g2d.drawString("L", x + 12, y + 19);
+
+                                    }
 
                                 } else {
                                     g2d.setColor(Color.DARK_GRAY);

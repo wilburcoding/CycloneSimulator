@@ -11,6 +11,7 @@ class Storm implements Serializable {
     double y;
     int landfalls = 0;
     double offSet;
+    double wChange = 0;
     double damageChange = 0;
     double yoffset;
     double xoffset;
@@ -21,7 +22,7 @@ class Storm implements Serializable {
     double oldShear = 0.0;
     double height;
     JMenuItem menuItem;
-    int chanceform = 0;
+    double chanceform = 0;
     boolean dead;
     double oldMovementSpeed = 3;
     double oldDamages;
@@ -49,6 +50,7 @@ class Storm implements Serializable {
 
     public Storm(int startingWindspeed, int numLows, int day) {
         winds = startingWindspeed;
+        wChange = 0;
         stormSize = myRandom(12, 25);
         windHistory.add(startingWindspeed);
         double random = myRandom(0, 10);
@@ -186,48 +188,12 @@ class Storm implements Serializable {
     }
 
     public void moveForward(double shear, boolean onland) {
-
-        if ((x > 10) && (y > 10) && (winds > 15)) {
+        if ((x > 10) && (y > 10) && (winds > 10)) {
             double oldX = x;
             double oldY = y;
-            if (!formed) {
-                if (winds > 27) {
-                    if (shear > 20) {
-                        chanceform = 1;
-                    } else {
-                        if (shear > 14) {
-                            chanceform = 2;
-                        } else {
-                            chanceform = 3;
-                        }
-                    }
-                } else {
-                    if (winds > 24) {
-                        if (shear > 16) {
-                            chanceform = 1;
-                        } else {
-                            if (shear > 11) {
-                                chanceform = 2;
-                            } else {
-                                chanceform = 3;
-                            }
-                        }
-                    } else {
 
-                        if (shear > 14) {
-                            chanceform = 1;
-                        } else {
-                            if (shear > 8) {
-                                chanceform = 2;
-                            } else {
-                                chanceform = 3;
-                            }
-                        }
-
-                    }
-                }
-            }
             if (y < 451) {
+
                 if (Math.abs(xoffset) < (250 - winds) / 30.0 + ((500 - y) - 50) / 45) {
                     if (randomGenerator(0, 1) == 1) {
                         xoffset = xoffset - myRandom(0, 0.7);
@@ -706,6 +672,9 @@ class Storm implements Serializable {
             if (winds < 70) {
                 ewrc = -1;
             }
+            if (!formed) {
+                chanceform = (5 * winds) / ((shear/12.0) + 1.4);
+            }
             if (oldewrc != ewrc) {
                 if (ewrc >= 0 && oldewrc == -1) {
                     headline = "...Starting EWRC...";
@@ -789,7 +758,9 @@ class Storm implements Serializable {
     public double getOldShear() {
         return oldShear;
     }
-
+    public double getChanceForm() {
+        return chanceform;
+    }
     public double getMovementSpeed() {
         return movementSpeed;
     }
@@ -1548,6 +1519,10 @@ class Storm implements Serializable {
                 }
             }
         }
+    }
+
+    public boolean isFormed() {
+        return formed;
     }
 
     public double getWindPeak() {
