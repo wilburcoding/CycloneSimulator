@@ -191,7 +191,7 @@ class Storm implements Serializable {
         if ((x > 10) && (y > 10) && (winds > 10)) {
             double oldX = x;
             double oldY = y;
-
+            double oldW = winds;
             if (y < 451) {
 
                 if (Math.abs(xoffset) < (250 - winds) / 30.0 + ((500 - y) - 50) / 45) {
@@ -329,6 +329,7 @@ class Storm implements Serializable {
                     onLand = -1;
                 }
             }
+
             land = onland;
             oldShear = shear;
 
@@ -675,6 +676,18 @@ class Storm implements Serializable {
             if (!formed) {
                 chanceform = (5 * winds) / ((shear/12.0) + 1.4);
             }
+            if (wChange != 0) {
+                while (Math.abs(winds-oldW) > 10) {
+                    if (winds-oldW > 0) {
+                        winds-=1;
+                    } else {
+                        winds+=1;
+                    }
+                }
+            }
+            wChange = winds - oldW;
+
+
             if (oldewrc != ewrc) {
                 if (ewrc >= 0 && oldewrc == -1) {
                     headline = "...Starting EWRC...";
