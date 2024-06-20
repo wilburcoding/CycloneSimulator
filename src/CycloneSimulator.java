@@ -2747,6 +2747,8 @@ public class CycloneSimulator implements Serializable {
                         g2d.drawString("Peak: " + Math.round(strongestStorm.getWindPeak()) + " mph", 280, 300);
                         g2d.drawString("Formed: " + Year.of(year).atDay(strongestStorm.getStartDay()), 280, 320);
                         g2d.drawString("Dissipated: " + Year.of(year).atDay(strongestStorm.getStartDay() + (strongestStorm.getHistory().size() / 8)), 280, 340);
+                        g2d.drawString("ACE: " + strongestStorm.getAce(), 280, 360);
+
                     }
                     int lx = 30;
                     int ly = 280;
