@@ -402,6 +402,7 @@ public class CycloneSimulator implements Serializable {
                 monthly = new int[12];
                 coordinateToAdd.clear();
                 damages = 0;
+                ace = 0;
                 history.clear();
                 year++;
                 z = 0;
