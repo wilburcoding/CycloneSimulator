@@ -2765,7 +2765,7 @@ public class CycloneSimulator implements Serializable {
                             ly += 20;
                         }
 
-                        if (amt == 20) {
+                        if (amt == 10) {
                             break;
                         }
                         amt++;
