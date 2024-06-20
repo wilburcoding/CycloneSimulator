@@ -395,6 +395,7 @@ public class CycloneSimulator implements Serializable {
                 hsp3[2] = (int) (hsp3[1] / myRandom(1.3, 2.8));
                 hurricanes = 0;
                 numstorms = 0;
+                symbol = "M";
                 tds = 0;
                 c5 = 0;
                 monthly = new int[12];
@@ -750,8 +751,8 @@ public class CycloneSimulator implements Serializable {
         }
 
         protected void update() {
-            DecimalFormat df = new DecimalFormat("#.###");
-            damages = Double.parseDouble(df.format(damages));
+//            DecimalFormat df = new DecimalFormat("#.###");
+//            damages = Double.parseDouble(df.format(damages));
             if (damages > 999) {
                 if (symbol.equals("M")) {
                     symbol = "B";
@@ -763,6 +764,7 @@ public class CycloneSimulator implements Serializable {
                     }
                 }
             }
+            damages = Math.round(damages);
             if (day < 31) {
                 shearToMonth = 5 + (1.0 / (day));
                 if (myRandom(0, 55) < 0.03 + minus) {
