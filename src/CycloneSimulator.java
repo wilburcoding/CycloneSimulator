@@ -1455,9 +1455,9 @@ public class CycloneSimulator implements Serializable {
                                 //((x2-x1)²+(y2-y1)²)
                                 double winds;
                                 double distance = Math.sqrt((y - storm.getY()) * (y - storm.getY()) + (x - storm.getX()) * (x - storm.getX()));
-                                winds = ((Math.sqrt(((16 * storm.getWinds()) * (storm.getStormSize()/2)) / (distance / 3)))-3)/0.67;
-                                if (winds > storm.getWinds()) {
-                                    winds = storm.getWinds();
+                                winds = Math.sqrt(((15 * storm.getWinds()) * (storm.getStormSize()/2.3)) / (distance / 3))*1.2 + myRandom(-1,1);
+                                if (winds > storm.getWinds() * 1.2) {
+                                    winds = storm.getWinds() * 1.2;
                                 }
                                 if (winds > highestWinds) {
                                     highestWinds = winds;
