@@ -11,6 +11,7 @@ class Storm implements Serializable {
     double y;
     int landfalls = 0;
     double ace = 0;
+    double sixMax = 0;
     double offSet;
     double wChange = 0;
     double damageChange = 0;
@@ -684,7 +685,19 @@ class Storm implements Serializable {
                 }
             }
             wChange = winds - oldW;
+            if (history.size() % 2 == 0) {
+                if (sixMax < winds) {
+                    sixMax = winds;
+                }
+                if (sixMax > 39) {
+                    System.out.println(sixMax);
+                    ace+=Math.pow(sixMax * 0.868976,2)/10000.0;
 
+                }
+                ace = (double) Math.round(ace * 1000) /1000;
+            } else {
+                sixMax = winds;
+            }
 
             if (oldewrc != ewrc) {
                 if (ewrc >= 0 && oldewrc == -1) {
@@ -1534,6 +1547,10 @@ class Storm implements Serializable {
 
     public boolean isFormed() {
         return formed;
+    }
+
+    public double getAce() {
+        return ace;
     }
 
     public double getWindPeak() {

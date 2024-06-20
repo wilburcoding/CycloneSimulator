@@ -307,6 +307,7 @@ public class CycloneSimulator implements Serializable {
         int tswarnings = 0;
         int huwatches = 0;
         int huwarnings = 0;
+        double ace =0;
         int c5 = 0;
         int lows;
         int toIncrement = 0;
@@ -1064,6 +1065,7 @@ public class CycloneSimulator implements Serializable {
                         strongestStorm = storm;
                     }
                 }
+                ace+=storm.getAce();
                 history.add(storm);
                 storms.remove(storm);
 
@@ -2170,6 +2172,7 @@ public class CycloneSimulator implements Serializable {
                         } else {
                             g2d.drawString("Type: Extratropical", 1010, 215);
                         }
+                        g2d.drawString("ACE: " + showingStormInfo.getAce() , 1010, 235);
                         g2d.setFont(new Font("Comic Sans MS", Font.PLAIN, 24));
 //                        g2d.drawString("Forecast Models", 1010, 240);
 //                        g2d.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
@@ -2692,7 +2695,7 @@ public class CycloneSimulator implements Serializable {
                     g2d.drawString("Season Summary", 30, 52);
                     g2d.setFont(new Font("Comic Sans MS", Font.PLAIN, 23));
                     g2d.drawString("Season Details", 30, 77);
-                    g2d.drawString("Strongest Storm", 280, 77);
+                    g2d.drawString("Strongest Storm", 280, 260);
                     g2d.drawString("Monthly Activity", 530, 77);
                     g2d.drawString("Season Forecasts", 740, 77);
                     g2d.drawString("Strongest Landfalls", 30, 260);
@@ -2735,13 +2738,15 @@ public class CycloneSimulator implements Serializable {
                     g2d.drawString("Landfalls: " + landfalls.size(), 30, 197);
                     g2d.drawString("Frame Delay: " + frameDelay, 30, 217);
                     g2d.drawString("Damages: $" + damages + symbol, 30, 237);
+                    g2d.drawString("ACE: " + ace, 280, 97);
+
                     if (strongestStorm != null) {
 
                         g2d.setFont(new Font("Comic Sans MS", Font.PLAIN, 18));
-                        g2d.drawString(strongestStorm.getName(), 280, 97);
-                        g2d.drawString("Peak: " + Math.round(strongestStorm.getWindPeak()) + " mph", 280, 117);
-                        g2d.drawString("Formed: " + Year.of(year).atDay(strongestStorm.getStartDay()), 280, 137);
-                        g2d.drawString("Dissipated: " + Year.of(year).atDay(strongestStorm.getStartDay() + (strongestStorm.getHistory().size() / 8)), 280, 157);
+                        g2d.drawString(strongestStorm.getName(), 280, 280);
+                        g2d.drawString("Peak: " + Math.round(strongestStorm.getWindPeak()) + " mph", 280, 300);
+                        g2d.drawString("Formed: " + Year.of(year).atDay(strongestStorm.getStartDay()), 280, 320);
+                        g2d.drawString("Dissipated: " + Year.of(year).atDay(strongestStorm.getStartDay() + (strongestStorm.getHistory().size() / 8)), 280, 340);
                     }
                     int lx = 30;
                     int ly = 280;
@@ -2800,6 +2805,7 @@ public class CycloneSimulator implements Serializable {
                             strongestStorm = storm;
                         }
                     }
+                    ace+=storm.getAce();
                     history.add(storm);
                     storms.remove(storm);
                 }
