@@ -1067,6 +1067,8 @@ public class CycloneSimulator implements Serializable {
                     }
                 }
                 ace+=storm.getAce();
+                ace = (double) Math.round(ace * 1000) / 1000.0;
+
                 history.add(storm);
                 storms.remove(storm);
 
@@ -2173,7 +2175,6 @@ public class CycloneSimulator implements Serializable {
                         } else {
                             g2d.drawString("Type: Extratropical", 1010, 215);
                         }
-                        ace = (double) Math.round(ace * 1000) / 1000.0;
                         //Force rounding ACE
                         g2d.drawString("ACE: " + showingStormInfo.getAce() , 1010, 235);
                         g2d.setFont(new Font("Comic Sans MS", Font.PLAIN, 24));
@@ -2811,6 +2812,8 @@ public class CycloneSimulator implements Serializable {
                         }
                     }
                     ace+=storm.getAce();
+                    ace = (double) Math.round(ace * 1000) / 1000.0;
+
                     history.add(storm);
                     storms.remove(storm);
                 }
