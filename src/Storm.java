@@ -690,7 +690,6 @@ class Storm implements Serializable {
                     sixMax = winds;
                 }
                 if (sixMax > 39) {
-                    System.out.println(sixMax);
                     ace+=Math.pow(sixMax * 0.868976,2)/10000.0;
 
                 }

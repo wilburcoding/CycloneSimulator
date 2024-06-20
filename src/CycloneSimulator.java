@@ -387,7 +387,7 @@ public class CycloneSimulator implements Serializable {
                         }
                     }
                 }
-                System.out.println(minus);
+                System.out.println("Debugging Info [SEASON ACTIVITY]:" + minus);
                 hsp1[1] = (int) (hsp1[0] / myRandom(1.3, 3));
                 hsp1[2] = (int) (hsp1[1] / myRandom(1.2, 2.3));
                 hsp2[1] = (int) (hsp2[0] / myRandom(1.6, 3.2));
@@ -420,7 +420,7 @@ public class CycloneSimulator implements Serializable {
                     try {
                         TimeUnit.MILLISECONDS.sleep(frameDelay);
                     } catch (Exception e2) {
-                        System.out.println("SLEEP ERROR");
+                        System.out.println("Debugging Info [ERROR]: SLEEP ERROR");
                     }
                 }
                 update();
@@ -463,7 +463,7 @@ public class CycloneSimulator implements Serializable {
                         try {
                             TimeUnit.MILLISECONDS.sleep(frameDelay);
                         } catch (Exception e2) {
-                            System.out.println("SLEEP ERROR");
+                            System.out.println("Debugging Info [ERROR]: SLEEP ERROR");
                         }
                     }
                     update();
@@ -490,7 +490,6 @@ public class CycloneSimulator implements Serializable {
 
                         for (Storm storm : storms) {
                             double distance = Math.sqrt(Math.pow(mouseY - 50 - storm.getY(), 2) + Math.pow(mouseX - 30 - storm.getX(), 2));
-                            System.out.println(distance);
                             if (distance < 20) {
                                 showingStormInfo = storm;
 
@@ -766,7 +765,7 @@ public class CycloneSimulator implements Serializable {
                     }
                 }
             }
-            damages = Math.round(damages);
+            damages = (double) Math.round(damages * 10) /10;
             if (day < 31) {
                 shearToMonth = 5 + (1.0 / (day));
                 if (myRandom(0, 55) < 0.03 + minus) {
@@ -1222,9 +1221,6 @@ public class CycloneSimulator implements Serializable {
                     }
 
                     lands.setThreat(threat);
-                    if (windThreat > 70) {
-                        System.out.println(rainThreat);
-                    }
                     lands.setWindThreat(windThreat);
                     lands.setRainThreat(rainThreat);
 
