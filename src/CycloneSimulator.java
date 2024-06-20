@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 public class CycloneSimulator implements Serializable {
     final JMenuBar menuBar = new JMenuBar();
+    private final String version = "v2.2.2";
     private final JComboBox<String> activityThings = new JComboBox<>();
     private final JComboBox<String> trackType = new JComboBox<>();
     private final JComboBox<String> resolution = new JComboBox<>();
@@ -43,7 +44,7 @@ public class CycloneSimulator implements Serializable {
     boolean t = false;
     boolean trackforecast = false;
     JPanel headerpanel = new JPanel();
-    JFrame frame = new JFrame("Settings - CycloneSimulator v2.1.7");
+    JFrame frame = new JFrame("Settings - CycloneSimulator "+ version);
     int frameDelay = 50;
     int year = 2021;
     boolean tcchance = false;
@@ -58,7 +59,7 @@ public class CycloneSimulator implements Serializable {
     boolean sWind = false;
     boolean gusts = false;
     boolean surge = false;
-
+    boolean threat = false;
     boolean seasonSummary = false;
     boolean huchance = false;
     int mouseX;
@@ -306,6 +307,7 @@ public class CycloneSimulator implements Serializable {
         int tswarnings = 0;
         int huwatches = 0;
         int huwarnings = 0;
+        double ace =0;
         int c5 = 0;
         int lows;
         int toIncrement = 0;
@@ -385,7 +387,7 @@ public class CycloneSimulator implements Serializable {
                         }
                     }
                 }
-                System.out.println(minus);
+                System.out.println("Debugging Info [SEASON ACTIVITY]:" + minus);
                 hsp1[1] = (int) (hsp1[0] / myRandom(1.3, 3));
                 hsp1[2] = (int) (hsp1[1] / myRandom(1.2, 2.3));
                 hsp2[1] = (int) (hsp2[0] / myRandom(1.6, 3.2));
@@ -394,11 +396,13 @@ public class CycloneSimulator implements Serializable {
                 hsp3[2] = (int) (hsp3[1] / myRandom(1.3, 2.8));
                 hurricanes = 0;
                 numstorms = 0;
+                symbol = "M";
                 tds = 0;
                 c5 = 0;
                 monthly = new int[12];
                 coordinateToAdd.clear();
                 damages = 0;
+                ace = 0;
                 history.clear();
                 year++;
                 z = 0;
@@ -416,7 +420,7 @@ public class CycloneSimulator implements Serializable {
                     try {
                         TimeUnit.MILLISECONDS.sleep(frameDelay);
                     } catch (Exception e2) {
-                        System.out.println("SLEEP ERROR");
+                        System.out.println("Debugging Info [ERROR]: SLEEP ERROR");
                     }
                 }
                 update();
@@ -434,6 +438,9 @@ public class CycloneSimulator implements Serializable {
                 frame.setTitle(Year.of(year).atDay(day) + ", " + z + ":00");
                 if (sWind) {
                     frame.setTitle(Year.of(year).atDay(day) + ", " + z + ":00 (SUSTAINED WINDS)");
+                }
+                if (threat) {
+                    frame.setTitle(Year.of(year).atDay(day) + ", " + z + ":00 (LAND THREAT)");
                 }
                 if (gusts) {
                     frame.setTitle(Year.of(year).atDay(day) + ", " + z + ":00 (WIND GUSTS)");
@@ -456,7 +463,7 @@ public class CycloneSimulator implements Serializable {
                         try {
                             TimeUnit.MILLISECONDS.sleep(frameDelay);
                         } catch (Exception e2) {
-                            System.out.println("SLEEP ERROR");
+                            System.out.println("Debugging Info [ERROR]: SLEEP ERROR");
                         }
                     }
                     update();
@@ -479,11 +486,10 @@ public class CycloneSimulator implements Serializable {
                     if (original != null) {
                         showing = true;
                     }
-                    if (pressed && (!sst && !tcchance && !huchance && !sWind && !gusts && !surge)) {
+                    if (pressed && (!sst && !tcchance && !huchance && !sWind && !gusts && !surge && !threat)) {
 
                         for (Storm storm : storms) {
                             double distance = Math.sqrt(Math.pow(mouseY - 50 - storm.getY(), 2) + Math.pow(mouseX - 30 - storm.getX(), 2));
-                            System.out.println(distance);
                             if (distance < 20) {
                                 showingStormInfo = storm;
 
@@ -746,8 +752,8 @@ public class CycloneSimulator implements Serializable {
         }
 
         protected void update() {
-            DecimalFormat df = new DecimalFormat("#.###");
-            damages = Double.parseDouble(df.format(damages));
+//            DecimalFormat df = new DecimalFormat("#.###");
+//            damages = Double.parseDouble(df.format(damages));
             if (damages > 999) {
                 if (symbol.equals("M")) {
                     symbol = "B";
@@ -759,6 +765,7 @@ public class CycloneSimulator implements Serializable {
                     }
                 }
             }
+            damages = (double) Math.round(damages * 10) /10;
             if (day < 31) {
                 shearToMonth = 5 + (1.0 / (day));
                 if (myRandom(0, 55) < 0.03 + minus) {
@@ -1058,6 +1065,9 @@ public class CycloneSimulator implements Serializable {
                         strongestStorm = storm;
                     }
                 }
+                ace+=storm.getAce();
+                ace = (double) Math.round(ace * 1000) / 1000.0;
+
                 history.add(storm);
                 storms.remove(storm);
 
@@ -1211,9 +1221,6 @@ public class CycloneSimulator implements Serializable {
                     }
 
                     lands.setThreat(threat);
-                    if (windThreat > 70) {
-                        System.out.println(rainThreat);
-                    }
                     lands.setWindThreat(windThreat);
                     lands.setRainThreat(rainThreat);
 
@@ -1241,7 +1248,7 @@ public class CycloneSimulator implements Serializable {
                     }
                 }
 
-                if (!sWind && !gusts && !sst && !tcchance && !huchance && !surge) {
+                if (!sWind && !gusts && !sst && !tcchance && !huchance && !surge && !threat) {
                     tswatches = 0;
                     tswarnings = 0;
                     huwarnings = 0;
@@ -1387,10 +1394,29 @@ public class CycloneSimulator implements Serializable {
                                 g2d.setColor(new Color(0, 0, 0));
                                 g2d.drawString(storm.getName(), x, y);
                                 if (storm.getStormType().getStormType() == 0) {
-                                    g2d.setColor(Color.LIGHT_GRAY);
-                                    g2d.fillOval(x, y, 30, 30);
-                                    g2d.setColor(new Color(0, 0, 0));
-                                    g2d.drawString("L", x + 12, y + 19);
+                                    if (!storm.isFormed()) {
+                                        if (storm.getChanceForm() < 30) {
+                                            g2d.setColor(new Color(255, 246, 88));
+
+                                        } else if (storm.getChanceForm() < 70) {
+                                            g2d.setColor(new Color(255, 177, 88));
+
+                                        } else {
+                                            g2d.setColor(new Color(255, 94, 88));
+
+                                        }
+
+                                        g2d.setFont(new Font("Comic Sans MS", Font.BOLD, 25));
+                                        g2d.drawString("X", x , y+20);
+
+
+                                    } else {
+                                        g2d.setColor(Color.LIGHT_GRAY);
+                                        g2d.fillOval(x, y, 30, 30);
+                                        g2d.setColor(new Color(0, 0, 0));
+                                        g2d.drawString("L", x + 12, y + 19);
+
+                                    }
 
                                 } else {
                                     g2d.setColor(Color.DARK_GRAY);
@@ -1430,9 +1456,9 @@ public class CycloneSimulator implements Serializable {
                                 //((x2-x1)²+(y2-y1)²)
                                 double winds;
                                 double distance = Math.sqrt((y - storm.getY()) * (y - storm.getY()) + (x - storm.getX()) * (x - storm.getX()));
-                                winds = ((Math.sqrt(((16 * storm.getWinds()) * (storm.getStormSize()/2)) / (distance / 3)))-3)/0.67;
-                                if (winds > storm.getWinds()) {
-                                    winds = storm.getWinds();
+                                winds = Math.sqrt(((15 * storm.getWinds()) * (storm.getStormSize()/2.3)) / (distance / 3))*1.2 + myRandom(-1,1);
+                                if (winds > storm.getWinds() * 1.2) {
+                                    winds = storm.getWinds() * 1.2;
                                 }
                                 if (winds > highestWinds) {
                                     highestWinds = winds;
@@ -1535,7 +1561,7 @@ public class CycloneSimulator implements Serializable {
                                     //int[] presetWinds = {25,35,55,85,100,120,137,160};
                                     double distance = Math.sqrt(((y2 + (SimResolution / 2.0) - coordinate.getY()) * ((y2 + (SimResolution / 2.0)) - coordinate.getY()) + ((x2 + (SimResolution / 2.0)) - coordinate.getX()) * ((x2 + (SimResolution / 2.0)) - coordinate.getX())));
                                     if (distance < 3) {
-                                        distance = 2;
+                                        distance = 3;
                                     }
                                     double winds = Math.sqrt(((15 * storm.getWinds()) * (storm.getStormSize()/2.3)) / ((distance) / 3) );
                                     double wChance;
@@ -1543,7 +1569,7 @@ public class CycloneSimulator implements Serializable {
                                     if (winds > 60) {
                                         wChance = 100;
                                     } else {
-                                        wChance = ((winds-20)/20)*100;
+                                        wChance = ((winds-30)/10)*100;
                                     }
                                     double oldWChance = wChance;
                                     wChance*=(double) (trackForecast.size()- (trackForecast.indexOf(coordinate)))/(trackForecast.size());
@@ -1611,7 +1637,7 @@ public class CycloneSimulator implements Serializable {
                                     //int[] presetWinds = {25,35,55,85,100,120,137,160};
                                     double distance = Math.sqrt(((y2 + (SimResolution / 2.0) - coordinate.getY()) * ((y2 + (SimResolution / 2.0)) - coordinate.getY()) + ((x2 + (SimResolution / 2.0)) - coordinate.getX()) * ((x2 + (SimResolution / 2.0)) - coordinate.getX())));
                                     if (distance < 3) {
-                                        distance = 2;
+                                        distance = 3;
                                     }
                                     double winds = Math.sqrt(((15 * storm.getWinds()) * (storm.getStormSize()/2.3)) / ((distance) / 3.0));
                                     double wChance;
@@ -1800,6 +1826,138 @@ public class CycloneSimulator implements Serializable {
 
 
                 }
+                if (threat) {
+                    int x2;
+                    int y2 = 0;
+                    ArrayList<ArrayList<Coordinate>> trackForecasts = new ArrayList<>();
+
+                    for (Storm storm : storms) {
+                        trackForecasts.add(storm.getTrackForecast(landList));
+
+
+                    }
+                    for (int i = 0; i < Math.ceil( 500.0 / (double) SimResolution); i++) {
+                        x2 = 0;
+                        for (int j = 0; j < Math.ceil(1000.0 / (double) SimResolution); j++) {
+                            Graphics2D g2d = (Graphics2D) g.create();
+                            int x = x2 + (SimResolution / 2);
+                            int y = y2 + (SimResolution / 2);
+                            double tsWindChance = 0;
+                            double huWindChance = 0;
+                            double confidenceTS = 0;
+                            double confidenceHU = 0;
+                            boolean inLand = false;
+                            for (Land land: landList) {
+                                if (land.inLandBorder(x,y, SimResolution)) {
+                                    inLand=true;
+                                } else {
+                                    for (int l = -1; l < 2; l++) {
+                                        for (int m = -1; m < 2; m++) {
+                                            int tx = x2 + (SimResolution / 2) + (SimResolution * l);
+                                            int ty = y2 + (SimResolution / 2) + (SimResolution * m);
+                                            if (land.inLandBorder(tx,ty, SimResolution)) {
+                                                inLand = true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            if (!inLand) {
+                                g2d.setColor(new Color(168, 165, 165));
+                                g2d.fillRect(x2, y2, SimResolution, SimResolution);
+                                x2 = x2 + SimResolution;
+                                continue;
+                            }
+                            for (ArrayList<Coordinate> trackForecast : trackForecasts) {
+
+                                Storm storm = storms.get(trackForecasts.indexOf(trackForecast));
+
+                                for (Coordinate coordinate : trackForecast) {
+                                    //int[] presetWinds = {25,35,55,85,100,120,137,160};
+                                    double distance = Math.sqrt(((y2 + (SimResolution / 2.0) - coordinate.getY()) * ((y2 + (SimResolution / 2.0)) - coordinate.getY()) + ((x2 + (SimResolution / 2.0)) - coordinate.getX()) * ((x2 + (SimResolution / 2.0)) - coordinate.getX())));
+                                    if (distance < 3) {
+                                        distance = 3;
+                                    }
+                                    //Math.sqrt(((15 * storm.getWinds()) * (storm.getStormSize()/2.3)) / (distance / 3))
+                                    double winds = Math.sqrt(((15 * coordinate.getWind()) * (storm.getStormSize()/2.3)) / ((distance) / 3) );
+                                    double wChance;
+                                    double hChance;
+                                    if (winds > coordinate.getWind()) {
+                                        winds = coordinate.getWind();
+                                    }
+
+                                    if (winds > 60) {
+                                        wChance = 100;
+                                    } else {
+                                        wChance = ((winds-30)/10)*100;
+                                    }
+                                    double oldWChance = wChance;
+                                    wChance*=(double) (trackForecast.size()- (trackForecast.indexOf(coordinate)))/(trackForecast.size());
+                                    if (wChance > oldWChance) {
+                                        wChance = oldWChance;
+                                    }
+                                    if (wChance > tsWindChance) {
+                                        tsWindChance=wChance;
+                                        confidenceTS = trackForecast.indexOf(coordinate);
+                                    }
+                                    if (winds > 90) {
+                                        hChance = 100;
+                                    } else {
+                                        hChance = ((winds-70)/20)*100;
+                                    }
+                                    double oldHChance = hChance;
+                                    hChance*=(double) (trackForecast.size()- (trackForecast.indexOf(coordinate)))/(trackForecast.size());
+                                    if (hChance > oldHChance) {
+                                        hChance = oldHChance;
+                                    }
+
+                                    if (hChance > huWindChance) {
+                                        huWindChance=hChance;
+                                        confidenceHU = trackForecast.indexOf(coordinate);
+                                    }
+
+
+                                }
+                            }
+                            if (!inLand) {
+                                g2d.setColor(new Color(168, 165, 165));
+                            } else {
+                                if (tsWindChance > 60) {
+                                    if (huWindChance > 60) {
+                                        g2d.setColor(new Color(255, 0, 0));
+                                    } else {
+                                        if (confidenceHU > 4 && huWindChance > 30) {
+                                            g2d.setColor(new Color(242, 177, 172));
+                                        } else if (tsWindChance > 80){
+                                            g2d.setColor(new Color(0, 71, 255));
+                                        } else {
+                                            if (confidenceTS > 3) {
+                                                g2d.setColor(new Color(255, 225, 0));
+
+                                            } else {
+                                                g2d.setColor(new Color(168, 165, 165));
+
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    if (confidenceTS > 3 && tsWindChance > 30) {
+                                        g2d.setColor(new Color(255, 225, 0));
+
+                                    } else {
+                                        g2d.setColor(new Color(168, 165, 165));
+
+                                    }
+                                }
+                            }
+                            g2d.fillRect(x2, y2, SimResolution, SimResolution);
+                            x2 = x2 + SimResolution;
+
+                        }
+                        y2 = y2 + SimResolution;
+                    }
+
+                }
                 if (sWind) {
                     int x2;
                     int y2 = 0;
@@ -1844,7 +2002,7 @@ public class CycloneSimulator implements Serializable {
                     }
 
                 }
-                if (sWind || gusts || sst || tcchance || surge || huchance) {
+                if (sWind || gusts || sst || tcchance || surge || huchance || threat) {
                     for (Land lands : landList) {
                         Graphics2D g2d = (Graphics2D) g.create();
                         g2d.setStroke(new BasicStroke(1));
@@ -2013,41 +2171,43 @@ public class CycloneSimulator implements Serializable {
                         } else {
                             g2d.drawString("Type: Extratropical", 1010, 215);
                         }
+                        //Force rounding ACE
+                        g2d.drawString("ACE: " + showingStormInfo.getAce() , 1010, 235);
                         g2d.setFont(new Font("Comic Sans MS", Font.PLAIN, 24));
-                        g2d.drawString("Forecast Models", 1010, 240);
-                        g2d.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
-                        g2d.drawString("Highest predicted category", 1010, 255);
-                        g2d.drawString(" out of 15 model runs", 1010, 272);
-                        ArrayList<Integer> peaks = new ArrayList<>();
-                        for (int i = 0; i < 8; i++) {
-                            peaks.add(0);
-                        }
-                        for (int i = 0; i < 15; i++) {
-                            int largest = 0;
-                            for (Coordinate coordinate : showingStormInfo.getTrackForecast(landList)) {
-                                if (colors.indexOf(coordinate.getColor()) > largest) {
-                                    largest = colors.indexOf(coordinate.getColor());
-                                }
-                            }
-                            peaks.set(largest, peaks.get(largest) + 1);
-                        }
-                        g2d.setFont(new Font("Comic Sans MS", Font.PLAIN, 18));
-                        g2d.setColor(colors.get(0));
-                        g2d.drawString("Low: " + peaks.get(0), 1010, 290);
-                        g2d.setColor(colors.get(1));
-                        g2d.drawString("TD: " + peaks.get(1), 1010, 310);
-                        g2d.setColor(colors.get(2));
-                        g2d.drawString("TS: " + peaks.get(2), 1010, 330);
-                        g2d.setColor(colors.get(3));
-                        g2d.drawString("Cat 1: " + peaks.get(3), 1010, 350);
-                        g2d.setColor(colors.get(4));
-                        g2d.drawString("Cat 2: " + peaks.get(4), 1010, 370);
-                        g2d.setColor(colors.get(5));
-                        g2d.drawString("Cat 3: " + peaks.get(5), 1010, 390);
-                        g2d.setColor(colors.get(6));
-                        g2d.drawString("Cat 4: " + peaks.get(6), 1010, 410);
-                        g2d.setColor(colors.get(7));
-                        g2d.drawString("Cat 5: " + peaks.get(7), 1010, 430);
+//                        g2d.drawString("Forecast Models", 1010, 240);
+//                        g2d.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+//                        g2d.drawString("Highest predicted category", 1010, 255);
+//                        g2d.drawString(" out of 15 model runs", 1010, 272);
+//                        ArrayList<Integer> peaks = new ArrayList<>();
+//                        for (int i = 0; i < 8; i++) {
+//                            peaks.add(0);
+//                        }
+//                        for (int i = 0; i < 15; i++) {
+//                            int largest = 0;
+//                            for (Coordinate coordinate : showingStormInfo.getTrackForecast(landList)) {
+//                                if (colors.indexOf(coordinate.getColor()) > largest) {
+//                                    largest = colors.indexOf(coordinate.getColor());
+//                                }
+//                            }
+//                            peaks.set(largest, peaks.get(largest) + 1);
+//                        }
+//                        g2d.setFont(new Font("Comic Sans MS", Font.PLAIN, 18));
+//                        g2d.setColor(colors.get(0));
+//                        g2d.drawString("Low: " + peaks.get(0), 1010, 290);
+//                        g2d.setColor(colors.get(1));
+//                        g2d.drawString("TD: " + peaks.get(1), 1010, 310);
+//                        g2d.setColor(colors.get(2));
+//                        g2d.drawString("TS: " + peaks.get(2), 1010, 330);
+//                        g2d.setColor(colors.get(3));
+//                        g2d.drawString("Cat 1: " + peaks.get(3), 1010, 350);
+//                        g2d.setColor(colors.get(4));
+//                        g2d.drawString("Cat 2: " + peaks.get(4), 1010, 370);
+//                        g2d.setColor(colors.get(5));
+//                        g2d.drawString("Cat 3: " + peaks.get(5), 1010, 390);
+//                        g2d.setColor(colors.get(6));
+//                        g2d.drawString("Cat 4: " + peaks.get(6), 1010, 410);
+//                        g2d.setColor(colors.get(7));
+//                        g2d.drawString("Cat 5: " + peaks.get(7), 1010, 430);
                         g2d.setFont(new Font("Comic Sans MS", Font.PLAIN, 24));
                         g2d.setColor(Color.BLACK);
                         g2d.drawString("Envr. Conditions", 1010, 455);
@@ -2535,7 +2695,7 @@ public class CycloneSimulator implements Serializable {
                     g2d.drawString("Season Summary", 30, 52);
                     g2d.setFont(new Font("Comic Sans MS", Font.PLAIN, 23));
                     g2d.drawString("Season Details", 30, 77);
-                    g2d.drawString("Strongest Storm", 280, 77);
+                    g2d.drawString("Strongest Storm", 280, 260);
                     g2d.drawString("Monthly Activity", 530, 77);
                     g2d.drawString("Season Forecasts", 740, 77);
                     g2d.drawString("Strongest Landfalls", 30, 260);
@@ -2578,13 +2738,17 @@ public class CycloneSimulator implements Serializable {
                     g2d.drawString("Landfalls: " + landfalls.size(), 30, 197);
                     g2d.drawString("Frame Delay: " + frameDelay, 30, 217);
                     g2d.drawString("Damages: $" + damages + symbol, 30, 237);
+                    g2d.drawString("ACE: " + ace, 280, 97);
+
                     if (strongestStorm != null) {
 
                         g2d.setFont(new Font("Comic Sans MS", Font.PLAIN, 18));
-                        g2d.drawString(strongestStorm.getName(), 280, 97);
-                        g2d.drawString("Peak: " + Math.round(strongestStorm.getWindPeak()) + " mph", 280, 117);
-                        g2d.drawString("Formed: " + Year.of(year).atDay(strongestStorm.getStartDay()), 280, 137);
-                        g2d.drawString("Dissipated: " + Year.of(year).atDay(strongestStorm.getStartDay() + (strongestStorm.getHistory().size() / 8)), 280, 157);
+                        g2d.drawString(strongestStorm.getName(), 280, 280);
+                        g2d.drawString("Peak: " + Math.round(strongestStorm.getWindPeak()) + " mph", 280, 300);
+                        g2d.drawString("Formed: " + Year.of(year).atDay(strongestStorm.getStartDay()), 280, 320);
+                        g2d.drawString("Dissipated: " + Year.of(year).atDay(strongestStorm.getStartDay() + (strongestStorm.getHistory().size() / 8)), 280, 340);
+                        g2d.drawString("ACE: " + strongestStorm.getAce(), 280, 360);
+
                     }
                     int lx = 30;
                     int ly = 280;
@@ -2601,7 +2765,7 @@ public class CycloneSimulator implements Serializable {
                             ly += 20;
                         }
 
-                        if (amt == 20) {
+                        if (amt == 10) {
                             break;
                         }
                         amt++;
@@ -2643,6 +2807,9 @@ public class CycloneSimulator implements Serializable {
                             strongestStorm = storm;
                         }
                     }
+                    ace+=storm.getAce();
+                    ace = (double) Math.round(ace * 1000) / 1000.0;
+
                     history.add(storm);
                     storms.remove(storm);
                 }
@@ -2711,6 +2878,7 @@ public class CycloneSimulator implements Serializable {
                 newMenuItem.addActionListener(e1 -> {
                     gusts = false;
                     sWind = false;
+                    threat = false;
                     sst = false;
                     tcchance = false;
                     huchance= false;
@@ -2785,6 +2953,7 @@ public class CycloneSimulator implements Serializable {
                     sWind = !sWind;
                     gusts = false;
                     sst = false;
+                    threat = false;
                     surge = false;
                     tcchance = false;
                     huchance = false;
@@ -2800,6 +2969,7 @@ public class CycloneSimulator implements Serializable {
                     surge = false;
                     tcchance = false;
                     huchance = false;
+                    threat = false;
                 });
                 layerMenu.add(newMenuItem);
 
@@ -2810,6 +2980,7 @@ public class CycloneSimulator implements Serializable {
                     sWind = false;
                     sst = !sst;
                     tcchance = false;
+                    threat = false;
                     surge = false;
                     huchance = false;
                 });
@@ -2821,6 +2992,7 @@ public class CycloneSimulator implements Serializable {
                     sWind = false;
                     sst = false;
                     tcchance = !tcchance;
+                    threat = false;
                     surge = false;
                     huchance = false;
                 });
@@ -2831,6 +3003,7 @@ public class CycloneSimulator implements Serializable {
                 newMenuItem.addActionListener(e1 -> {
                     gusts = false;
                     sWind = false;
+                    threat = false;
                     sst = false;
                     huchance = false;
                     tcchance = false;
@@ -2853,6 +3026,20 @@ public class CycloneSimulator implements Serializable {
                     sst = false;
                     tcchance = false;
                     surge = false;
+                    threat = false;
+                });
+
+                layerMenu.add(newMenuItem);
+                newMenuItem = new JMenuItem("Land Threat");
+                newMenuItem.setActionCommand("Land Threat");
+                newMenuItem.addActionListener(e1 -> {
+                    sWind = false;
+                    gusts = false;
+                    sst = false;
+                    surge = false;
+                    tcchance = false;
+                    huchance = false;
+                    threat = !threat;
                 });
                 layerMenu.add(newMenuItem);
                 trackforecastshow = new JMenuItem("Track Forecast");
@@ -2956,6 +3143,7 @@ public class CycloneSimulator implements Serializable {
                                                 sWind = !sWind;
                                                 gusts = false;
                                                 sst = false;
+                                                threat = false;
                                                 surge = false;
                                                 tcchance = false;
                                                 huchance = false;
@@ -2964,6 +3152,8 @@ public class CycloneSimulator implements Serializable {
                                                 gusts = !gusts;
                                                 sWind = false;
                                                 sst = false;
+                                                threat = false;
+
                                                 surge = false;
                                                 huchance = false;
 
@@ -2975,6 +3165,8 @@ public class CycloneSimulator implements Serializable {
                                                     sst = false;
                                                     tcchance = false;
                                                     surge = false;
+                                                    threat = false;
+
                                                     huchance = false;
 
                                                 }
@@ -2985,11 +3177,15 @@ public class CycloneSimulator implements Serializable {
                                                     tcchance = false;
                                                     surge = false;
                                                     huchance = false;
+                                                    threat = false;
+
 
                                                 } else {
                                                     if (ke.getKeyCode() == KeyEvent.VK_5) {
                                                         gusts = false;
                                                         sWind = false;
+                                                        threat = false;
+
                                                         sst = false;
                                                         tcchance = !tcchance;
                                                         surge = false;
@@ -3000,6 +3196,8 @@ public class CycloneSimulator implements Serializable {
                                                             gusts = false;
                                                             sWind = false;
                                                             sst = false;
+                                                            threat = false;
+
                                                             tcchance = false;
                                                             surge = !surge;
                                                             huchance = false;
@@ -3007,10 +3205,21 @@ public class CycloneSimulator implements Serializable {
                                                             if (ke.getKeyCode() == KeyEvent.VK_8) {
                                                                 gusts = false;
                                                                 sWind = false;
+                                                                threat = false;
                                                                 sst = false;
                                                                 tcchance = false;
                                                                 surge = false;
                                                                 huchance = !huchance;
+                                                                t = false;
+                                                            }
+                                                            if (ke.getKeyCode() == KeyEvent.VK_9) {
+                                                                gusts = false;
+                                                                sWind = false;
+                                                                sst = false;
+                                                                tcchance = false;
+                                                                surge = false;
+                                                                huchance = false;
+                                                                threat = !threat;
                                                                 t = false;
                                                             }
                                                             if (ke.getKeyCode() == KeyEvent.VK_7) {

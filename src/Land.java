@@ -13,6 +13,7 @@ class Land implements Serializable {
     public int xRightBound;
     public int xSize;
     public int wait=0;
+    public double preparedness;
     public int ySize;
     public double damageChange=0;
     public double damages=0;
@@ -77,7 +78,9 @@ class Land implements Serializable {
     public String getLandName() {
         return landName;
     }
-
+    public double rNum(double min, double max) {
+        return (new Random().nextInt((int) ((Math.abs(max) - Math.abs(min)) * 10 + 1)) + Math.abs(min) * 10) / 10.0;
+    }
     public void clearDamages() {
         stormsAffected.clear();
     }
@@ -91,8 +94,12 @@ class Land implements Serializable {
         yTopBound = top;
         xLeftBound = left;
         yBottomBound = top+ySize;
+        preparedness = rNum(0.7, 1.3);
 
         xRightBound = left+xSize;
+    }
+    public double getPreparedness() {
+        return preparedness;
     }
     public void update() {
         yBottomBound = yTopBound+ySize;
