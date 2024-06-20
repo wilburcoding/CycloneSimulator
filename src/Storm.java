@@ -10,6 +10,7 @@ class Storm implements Serializable {
     int damages = 0;
     double y;
     int landfalls = 0;
+    double ace = 0;
     double offSet;
     double wChange = 0;
     double damageChange = 0;

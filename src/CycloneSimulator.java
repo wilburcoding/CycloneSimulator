@@ -2171,40 +2171,40 @@ public class CycloneSimulator implements Serializable {
                             g2d.drawString("Type: Extratropical", 1010, 215);
                         }
                         g2d.setFont(new Font("Comic Sans MS", Font.PLAIN, 24));
-                        g2d.drawString("Forecast Models", 1010, 240);
-                        g2d.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
-                        g2d.drawString("Highest predicted category", 1010, 255);
-                        g2d.drawString(" out of 15 model runs", 1010, 272);
-                        ArrayList<Integer> peaks = new ArrayList<>();
-                        for (int i = 0; i < 8; i++) {
-                            peaks.add(0);
-                        }
-                        for (int i = 0; i < 15; i++) {
-                            int largest = 0;
-                            for (Coordinate coordinate : showingStormInfo.getTrackForecast(landList)) {
-                                if (colors.indexOf(coordinate.getColor()) > largest) {
-                                    largest = colors.indexOf(coordinate.getColor());
-                                }
-                            }
-                            peaks.set(largest, peaks.get(largest) + 1);
-                        }
-                        g2d.setFont(new Font("Comic Sans MS", Font.PLAIN, 18));
-                        g2d.setColor(colors.get(0));
-                        g2d.drawString("Low: " + peaks.get(0), 1010, 290);
-                        g2d.setColor(colors.get(1));
-                        g2d.drawString("TD: " + peaks.get(1), 1010, 310);
-                        g2d.setColor(colors.get(2));
-                        g2d.drawString("TS: " + peaks.get(2), 1010, 330);
-                        g2d.setColor(colors.get(3));
-                        g2d.drawString("Cat 1: " + peaks.get(3), 1010, 350);
-                        g2d.setColor(colors.get(4));
-                        g2d.drawString("Cat 2: " + peaks.get(4), 1010, 370);
-                        g2d.setColor(colors.get(5));
-                        g2d.drawString("Cat 3: " + peaks.get(5), 1010, 390);
-                        g2d.setColor(colors.get(6));
-                        g2d.drawString("Cat 4: " + peaks.get(6), 1010, 410);
-                        g2d.setColor(colors.get(7));
-                        g2d.drawString("Cat 5: " + peaks.get(7), 1010, 430);
+//                        g2d.drawString("Forecast Models", 1010, 240);
+//                        g2d.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+//                        g2d.drawString("Highest predicted category", 1010, 255);
+//                        g2d.drawString(" out of 15 model runs", 1010, 272);
+//                        ArrayList<Integer> peaks = new ArrayList<>();
+//                        for (int i = 0; i < 8; i++) {
+//                            peaks.add(0);
+//                        }
+//                        for (int i = 0; i < 15; i++) {
+//                            int largest = 0;
+//                            for (Coordinate coordinate : showingStormInfo.getTrackForecast(landList)) {
+//                                if (colors.indexOf(coordinate.getColor()) > largest) {
+//                                    largest = colors.indexOf(coordinate.getColor());
+//                                }
+//                            }
+//                            peaks.set(largest, peaks.get(largest) + 1);
+//                        }
+//                        g2d.setFont(new Font("Comic Sans MS", Font.PLAIN, 18));
+//                        g2d.setColor(colors.get(0));
+//                        g2d.drawString("Low: " + peaks.get(0), 1010, 290);
+//                        g2d.setColor(colors.get(1));
+//                        g2d.drawString("TD: " + peaks.get(1), 1010, 310);
+//                        g2d.setColor(colors.get(2));
+//                        g2d.drawString("TS: " + peaks.get(2), 1010, 330);
+//                        g2d.setColor(colors.get(3));
+//                        g2d.drawString("Cat 1: " + peaks.get(3), 1010, 350);
+//                        g2d.setColor(colors.get(4));
+//                        g2d.drawString("Cat 2: " + peaks.get(4), 1010, 370);
+//                        g2d.setColor(colors.get(5));
+//                        g2d.drawString("Cat 3: " + peaks.get(5), 1010, 390);
+//                        g2d.setColor(colors.get(6));
+//                        g2d.drawString("Cat 4: " + peaks.get(6), 1010, 410);
+//                        g2d.setColor(colors.get(7));
+//                        g2d.drawString("Cat 5: " + peaks.get(7), 1010, 430);
                         g2d.setFont(new Font("Comic Sans MS", Font.PLAIN, 24));
                         g2d.setColor(Color.BLACK);
                         g2d.drawString("Envr. Conditions", 1010, 455);
