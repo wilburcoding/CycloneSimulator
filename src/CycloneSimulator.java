@@ -426,12 +426,11 @@ public class CycloneSimulator implements Serializable {
                 update();
 
                 repaint();
+                z = z + 3;
 
                 if (z == 24) {
                     z = 0;
                     day++;
-                } else {
-                    z = z + 3;
                 }
 
 
@@ -469,14 +468,12 @@ public class CycloneSimulator implements Serializable {
                     update();
 
                     repaint();
+                    z = z + 3;
 
                     if (z == 24) {
                         z = 0;
                         day++;
-                    } else {
-                        z = z + 3;
                     }
-
                     frame.setTitle(Year.of(year).atDay(day) + ", " + z + ":00 (PAUSED)");
                     singleStep = false;
                 } else {
