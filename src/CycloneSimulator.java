@@ -2152,7 +2152,13 @@ public class CycloneSimulator implements Serializable {
                         }
                         String dissipated = "";
                         if (showingStormInfo.isDead()) {
-                            dissipated=Year.of(year).atDay(showingStormInfo.getStartDay() + (showingStormInfo.getHistory().size() / 8)).toString();
+                            int stormday = showingStormInfo.getStartDay() + (showingStormInfo.getHistory().size() / 8);
+                            int yr = year;
+                            if (stormday > 365) {
+                                year+=1;
+                                stormday = stormday-365;
+                            }
+                            dissipated=Year.of(yr).atDay(stormday).toString();
                         }
                         g2d.drawString("Winds: " + Math.round(showingStormInfo.getWinds()) + " mph", 1010, 115);
                         g2d.drawString("Peak: " + Math.round(showingStormInfo.getWindPeak()) + " mph", 1010, 135);
@@ -2743,7 +2749,14 @@ public class CycloneSimulator implements Serializable {
                         g2d.drawString(strongestStorm.getName(), 280, 280);
                         g2d.drawString("Peak: " + Math.round(strongestStorm.getWindPeak()) + " mph", 280, 300);
                         g2d.drawString("Formed: " + Year.of(year).atDay(strongestStorm.getStartDay()), 280, 320);
-                        g2d.drawString("Dissipated: " + Year.of(year).atDay(strongestStorm.getStartDay() + (strongestStorm.getHistory().size() / 8)), 280, 340);
+                        int stormday = strongestStorm.getStartDay() + (strongestStorm.getHistory().size() / 8);
+                        int yr = year;
+                        if (stormday > 365) {
+                            year+=1;
+                            stormday = stormday-365;
+                        }
+                        String dissipated=Year.of(yr).atDay(stormday).toString();
+                        g2d.drawString("Dissipated: " + dissipated, 280, 340);
                         g2d.drawString("ACE: " + strongestStorm.getAce(), 280, 360);
 
                     }
