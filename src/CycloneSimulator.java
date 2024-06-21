@@ -329,7 +329,7 @@ public class CycloneSimulator implements Serializable {
             month--;
             toIncrement = month;
 
-            if (day == 365 && z == 24) {
+            if (day == 365 && z == 18) {
                 day = 1;
                 majors = 0;
                 activity = myRandom(0, 2);
