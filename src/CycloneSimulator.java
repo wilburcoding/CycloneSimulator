@@ -2440,12 +2440,13 @@ public class CycloneSimulator implements Serializable {
                     }
                     for (Storm storm : storms) {
                         g2d.setColor(storm.getCategory(storm.getWindPeak()));
-                        g2d.fillRect(storm.getStartDay() * 3 + 52, y - 38, (int) Math.round(storm.getHistory().size() / 8.0) * 3 + 2, 28);
+                        g2d.fillRect(storm.getStartDay() * 3 + 52, y-38, (int) Math.round(storm.getHistory().size() / 8.0) * 3 + 2, 28);
                         g2d.drawString(storm.getName(), (int) (storm.getStartDay() * 3 + 52 + (Math.round(storm.getHistory().size() / 8.0) * 3 + 2)) + 5, y - 15);
                         y = y + 30;
                         if (y == 450) {
                             y = 90;
                         }
+
 
                     }
 
@@ -3052,8 +3053,8 @@ public class CycloneSimulator implements Serializable {
                     threat = !threat;
                 });
                 layerMenu.add(newMenuItem);
-                trackforecastshow = new JMenuItem("Track Forecast");
-                trackforecastshow.setActionCommand("Track Forecast");
+                trackforecastshow = new JMenuItem("Intensity Forecast");
+                trackforecastshow.setActionCommand("Intensity Forecast");
                 trackforecastshow.addActionListener(e1 -> trackforecast = !trackforecast);
                 layerMenu.add(trackforecastshow);
 
