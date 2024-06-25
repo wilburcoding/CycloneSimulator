@@ -2653,7 +2653,7 @@ public class CycloneSimulator implements Serializable {
 
                         for (int j = 20; j < 220; j += 20) {
                             g2d.setColor(Color.BLACK);
-                            g2d.drawString(j + " mph", 25, 475 - ((int) (j * 1.8)));
+                            g2d.drawString(j + " mph", 28, 475 - ((int) (j * 1.8)));
                         }
                         ArrayList<Color> modelcolors = new ArrayList<>();
                         modelcolors.add(new Color(74, 133, 78));
@@ -2661,26 +2661,31 @@ public class CycloneSimulator implements Serializable {
                         modelcolors.add(new Color(136, 66, 40));
                         modelcolors.add(new Color(98, 65, 120));
                         modelcolors.add(new Color(93, 38, 56));
+                        g2d.setStroke(new BasicStroke(6));
+                        double distanceBetweenPoints = ((1150.0-55) / (21 + showingStormInfo.getWindHistory().size()));
+                        ArrayList<Integer> windHistory = showingStormInfo.getWindHistory();
+                        g2d.setStroke(new BasicStroke(3));
+                        int end = 0;
+                        for (int p = 0; p < showingStormInfo.getWindHistory().size()-1; p++) {
+                            g2d.drawLine((int) (120+(distanceBetweenPoints * p)), 475 - (int) (windHistory.get(p) * 1.8), (int) (120+(distanceBetweenPoints * (p+1))), 475 - (int) (windHistory.get(p+1) * 1.8));
+                            end = (int) (120+(distanceBetweenPoints * (p+1)));
+                        }
 
                         for (int i = 0; i < 5; i++) {
                             ArrayList<Double> forecast = showingStormInfo.getForecastWinds(landList);
 
                             if (forecast.size() > 1) {
 
-                                double distanceBetweenPoints = ((1150.0 - 55) / forecast.size());
-                                double x = 80;
-                                double previousX = 80;
-                                double previousWind = forecast.get(0);
-                                for (int k = 1; k < forecast.size(); k++) {
+                                double x = end;
+                                for (int k = 0; k < forecast.size()-1; k++) {
 
                                     double wind = forecast.get(k);
+                                    double next = forecast.get(k+1);
+
                                     g2d.setColor(modelcolors.get(i));
                                     g2d.setStroke(new BasicStroke(2));
-                                    g2d.drawLine((int) previousX, 475 - (int) (previousWind * 1.8), (int) x, 475 - (int) (wind * 1.8));
-                                    //g2d.drawLine(x,475- (int) (wind * 1.8), (int) (x + distanceBetweenPoints),475-(int) (showingStormInfo.getWindHistory().get(showingStormInfo.getWindHistory().indexOf(wind) + 1)*1.8));
-
-                                    previousX = x;
-                                    previousWind = wind;
+                                    g2d.drawLine((int) x, 475 - (int) (wind * 1.8), (int) (x+distanceBetweenPoints), 475 - (int) (next * 1.8));
+                                    g2d.drawOval((int) x -3,475 - (int) (wind * 1.8) - 3, 6, 6);
                                     x = (x + distanceBetweenPoints);
                                 }
 
